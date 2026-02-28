@@ -1,0 +1,71 @@
+.indent {
+  text-indent: 40px;
+  text-align: justify; 
+}
+
+.box4 {
+  text-align: justify;
+  line-height: 1.5;
+}
+
+.box1 {
+  text-align: justify;
+  line-height: 1.4;
+}
+
+
+.founder-pic {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  text-align: center;
+  width: 250px;
+}
+
+.founder-pic img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.founder-pic h3 {
+  margin: 5px 0;
+}
+
+.founder-pic p {
+  margin: 0;
+}
+
+.box6 h1 {
+  text-align: center;
+}
+
+.tab {
+  margin-left: 40px;   
+}
+
+
+.lcba-image-right {
+  width: 200px;
+  height: 250px;
+  float: left;
+  margin: 10px;
+  text-align: center;
+}
+
+.lcba-image-right img {
+  width: 840px;
+  height: 246px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+footer {
+  background-color: #f9f7f7;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  height: 70px;
+  border-radius: 10px;
+  clear: both;   /* ADD THIS */
+  margin-top: 20px;
+}

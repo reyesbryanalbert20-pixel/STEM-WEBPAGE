@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIDEO</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  font-family: "sans-serif";
+  padding: 10px;
+  background: #1600ba;
+  font-size: 18px;
+  margin:0;
+  color:white;
+}
+
+/* Header */
+.header {
+  position: relative;
+  padding: 30px;
+  text-align: center;
+  background-image: url(stem_img.jpg);
+  background-size: cover;
+  background-position: center;
+  height: 270px;
+  transition: all 0.8s ease;
+}
+.header:hover {
+  background-image: url(stem_img.jpg); 
+  background-color: white;
+  height: 400px;
+}
+.header img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  padding: 10px;
+  margin-top: 20px;
+  transition: opacity 0.5s ease;
+}
+.header:hover img { opacity: 0; }
+
+/* Navigation */
+.topnav {
+  overflow: hidden;
+  background-color: #002183;
+  margin-bottom: 20px;
+}
+.topnav a {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+.topnav a:hover { background-color: #fdfd83; color: navy; }
+
+/* Video Grid */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 4px;
+  margin-top: 20px;
+}
+.column {
+  flex: 25%; /* fixed 4 columns */
+  padding: 0 4px;
+}
+.column video {
+  width: 100%;
+  margin-top: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.column video:hover {
+  opacity: 1;
+  transform: scale(1.03);
+}
+
+.box1 {
+  width: 1480px;
+  height: 100px;
+  background-color: #1600ba;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color:white;
+  border-radius:10px;
+  text-align: center;
+}
+
+/* Expanded video */
+.video-container { display:none; position:relative; margin-top:20px; }
+#expandedVideo { width:100%; max-height:500px; border-radius:8px; }
+#videoText { position:absolute; bottom:15px; left:15px; font-size:20px; text-shadow:1px 1px 3px black; }
+.closebtn { position:absolute; top:10px; right:15px; font-size:35px; cursor:pointer; text-shadow:1px 1px 3px black; color:white; }
+
+/* Footer */
+footer {
+  background-color: #f9f7f7;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  height: 70px;
+  border-radius:10px;
+}
+.footer-logo { width: 200px; height: 40px; margin-bottom: 10px; }
+
+/* Responsive */
+@media screen and (max-width:800px){ .column{ flex:50%; } }
+@media screen and (max-width:500px){ .column{ flex:100%; } }
+</style>
+
+</head>
+<body>
+<div class="header">
+</div>
+
+
+<!-- Navigation -->
+<div class="topnav">
+  <a href="index.html">Main Page</a>
+  <a href="ABOUT LCBA.HTML">About LCBA</a>
+  <a href="STEM.html">STEM</a>
+  <a href="IMAGE.HTML">Image Gallery</a>
+  <a href="VIDEO.HTML">Video Gallery</a>
+  <a href="GAME.HTML" style="float:right">Game</a>
+</div>
+
+  <div class="box box1">
+    <br>
+    <h1>VIDEO GALLERY</h1>
+  </div>
+
+<!-- 4-Column Video Grid BELOW HEADER -->
+<div class="row">
+  <div class="column">
+    <video muted loop>
+      <source src="VIDEO(1).mp4" type="video/mp4">
+    </video>
+    <video muted loop>
+      <source src="VIDEO(2).mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="column">
+    <video muted loop>
+      <source src="VIDEO(3).mp4" type="video/mp4">
+    </video>
+    <video muted loop>
+      <source src="VIDEO(4).mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="column">
+    <video muted loop>
+      <source src="VIDEO(5).mp4" type="video/mp4">
+    </video>
+    <video muted loop>
+      <source src="VIDEO(6).mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="column">
+    <video muted loop>
+      <source src="VIDEO(7).mp4" type="video/mp4">
+    </video>
+    <video muted loop>
+      <source src="VIDEO(8).mp4" type="video/mp4">
+    </video>
+  </div>
+</div>
+
+<!-- Expanded video container -->
+<div class="video-container">
+  <span class="closebtn" onclick="this.parentElement.style.display='none'">&times;</span>
+  <video id="expandedVideo" controls></video>
+  <div id="videoText">Video Preview</div>
+</div>
+
+<script>
+// Hover play/pause
+var videos = document.querySelectorAll(".column video");
+videos.forEach(function(video){
+  video.addEventListener("mouseenter", function(){ video.play(); });
+  video.addEventListener("mouseleave", function(){ video.pause(); video.currentTime=0; });
+
+  // Click to expand
+  video.addEventListener("click", function(){
+    var expanded = document.getElementById("expandedVideo");
+    var text = document.getElementById("videoText");
+    expanded.src = video.querySelector("source").src;
+    text.innerHTML = video.querySelector("source").src.split('/').pop();
+    document.querySelector(".video-container").style.display="block";
+    expanded.play();
+  });
+});
+</script>
+<br>
+<br>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-content">
+    <img src="logo.png" alt="Company Logo" class="footer-logo">
+  </div>
+</footer>
+
+</body>
+</html>
+
+

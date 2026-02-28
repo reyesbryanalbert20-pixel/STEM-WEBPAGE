@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAME</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Georgia";
+  padding: 10px;
+  background: #1600ba;
+  font-size: 18px;
+}
+
+/* Header */
+.header {
+  position: relative;
+  padding: 30px;
+  text-align: center;
+  background-image: url("WORDSEARCH\(BG\).png");
+  background-size: cover;
+  background-position: center;
+  height: 270px;
+  transition: all 0.8s ease;
+}
+
+.header:hover {
+  background-image: url("WORDSEARCH\(BG\).png"); 
+  background-color: white;
+  height: 400px;
+}
+
+.header img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  padding: 10px;
+  margin-top: 20px;
+  transition: opacity 0.5s ease;
+}
+
+.header:hover img {
+  opacity: 0;
+}
+
+/* NAV */
+.topnav {
+  overflow: hidden;
+  background-color: #002183;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.topnav a:hover {
+  background-color: #fdfd83;
+  color: navy;
+}
+
+/* GAME BOX */
+.game-box {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  margin: 30px auto;
+  width: 95%;
+  max-width: 1100px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.game-box h2,
+.game-box p {
+  color: #002183;
+  text-align: center;
+}
+
+.game-container {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(15, 35px);
+  gap: 3px;
+}
+
+.cell {
+  width: 35px;
+  height: 35px;
+  background: #f4f4f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.cell.selected { background: orange; }
+.cell.found { background: #fdfd83; color: #002183; }
+
+.side-panel { max-width: 300px; }
+
+.word-list span {
+  display: inline-block;
+  margin: 5px 8px 5px 0;
+}
+
+.found-word {
+  text-decoration: line-through;
+  color: #002183;
+}
+
+button {
+  padding: 8px 15px;
+  margin: 5px 5px 5px 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.level-btn { background: #002183; color: white; }
+.start-btn { background: green; color: white; }
+.restart-btn { background: red; color: white; }
+.play-btn { background: orange; color: white; display:none; }
+
+footer {
+  background-color: #f9f7f7;
+  text-align: center;
+  padding: 15px;
+  height: 70px;
+  border-radius:10px;
+  margin-top: 30px;
+}
+
+.footer-logo {
+  width: 200px;
+  height: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+</div>
+
+<div class="topnav">
+  <a href="index.html">Main Page</a>
+  <a href="ABOUT LCBA.HTML">About LCBA</a>
+  <a href="STEM.html">STEM</a>
+  <a href="IMAGE.HTML">Image Gallery</a>
+  <a href="VIDEO.HTML">Video Gallery</a>
+  <a href="GAME.HTML" style="float:right">Game</a>
+</div>
+
+<div class="game-box">
+
+<h2>STEM WORD SEARCH GAME</h2>
+
+<div style="text-align:center;">
+  <button onclick="setLevel('easy')" class="level-btn">Easy</button>
+  <button onclick="setLevel('medium')" class="level-btn">Medium</button>
+  <button onclick="setLevel('hard')" class="level-btn">Hard</button>
+</div>
+
+<p>Find all the STEM words before time runs out!</p>
+
+<div class="game-container">
+
+<div class="grid" id="grid"></div>
+
+<div class="side-panel">
+  <p><strong>Time:</strong> <span id="time">0</span></p>
+  <p><strong>Score:</strong> <span id="score">0</span></p>
+
+  <div class="word-list" id="wordList"></div>
+
+  <button onclick="startGame()" class="start-btn">Start</button>
+  <button onclick="restartGame()" class="restart-btn">Restart</button>
+  <button onclick="restartGame()" class="play-btn" id="playAgain">Play Again</button>
+</div>
+
+</div>
+</div>
+
+<footer>
+  <img src="logo.png" class="footer-logo">
+</footer>
+
+<script>
+const gridSize = 15;
+let selectedCells = [];
+let foundWords = [];
+let score = 0;
+let timeLeft = 0;
+let timer;
+let currentWords = [];
+let currentLevel = "";
+
+const levels = {
+  easy: {
+    time: 120,
+    count: 5,
+    words: [
+      "MATH","CODE","DATA","TECH","LAB",
+      "AI","APP","WEB","BYTE","LOGIC","GRAPH",
+      "TOOL"
+    ]
+  },
+  medium: {
+    time: 180,
+    count: 10,
+    words: [
+      "PHYSICS","BIOLOGY","CHEMISTRY","ROBOT","FORMULA",
+      "ENGINEER","ENERGY","SYSTEM","NETWORK","MACHINE",
+      "CIRCUIT","DEVICE","ANALYSIS","THEORY","DESIGN","EXPLORATION",
+      "LABORATORY","CALCULATION","PROTOTYPE","BIOMECHANICS"
+    ]
+  },
+  hard: {
+    time: 240,
+    count: 15,
+    words: [
+      "PROGRAMMING","CYBERSECURITY","NANOTECH","QUANTUM",
+      "GENETICS","ASTRONOMY","THERMODYNAMICS","INNOVATION",
+      "MICROCHIP","ALGORITHM","DATABASE","ELECTRONICS",
+      "BIOTECHNOLOGY","CALCULUS","ARTIFICIAL","INTELLIGENCE",
+      "NEURAL","AUTOMATION","SATELLITE","RESEARCH","DEEPLEARNING",
+      "BIOENGINEERING","TELECOMMUNICATION"
+    ]
+  }
+};
+
+function getRandomWords(wordArray, count){
+  let shuffled = [...wordArray].sort(()=>0.5 - Math.random());
+  return shuffled.slice(0, count);
+}
+
+function setLevel(level){
+  currentLevel = level;
+  currentWords = getRandomWords(levels[level].words, levels[level].count);
+
+  timeLeft = levels[level].time;
+  document.getElementById("time").textContent = timeLeft;
+
+  score = 0;
+  foundWords = [];
+  document.getElementById("score").textContent = 0;
+  document.getElementById("playAgain").style.display = "none";
+
+  generateGrid();
+  displayWords();
+}
+
+function generateGrid(){
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  let letters = Array(gridSize*gridSize).fill("")
+    .map(()=>String.fromCharCode(65+Math.random()*26|0));
+
+  currentWords.forEach(word=>{
+    let placed=false;
+    while(!placed){
+      let dir=Math.random()>0.5?"H":"V";
+      let row=Math.floor(Math.random()*gridSize);
+      let col=Math.floor(Math.random()*gridSize);
+
+      if(dir==="H" && col+word.length<=gridSize){
+        for(let i=0;i<word.length;i++)
+          letters[row*gridSize+col+i]=word[i];
+        placed=true;
+      }
+      else if(dir==="V" && row+word.length<=gridSize){
+        for(let i=0;i<word.length;i++)
+          letters[(row+i)*gridSize+col]=word[i];
+        placed=true;
+      }
+    }
+  });
+
+  letters.forEach(letter=>{
+    const cell=document.createElement("div");
+    cell.classList.add("cell");
+    cell.textContent=letter;
+
+    cell.addEventListener("mousedown",()=>{
+      selectedCells=[cell];
+      cell.classList.add("selected");
+    });
+
+    cell.addEventListener("mouseover",()=>{
+      if(selectedCells.length>0){
+        selectedCells.push(cell);
+        cell.classList.add("selected");
+      }
+    });
+
+    cell.addEventListener("mouseup",checkWord);
+
+    grid.appendChild(cell);
+  });
+
+  document.addEventListener("mouseup",()=>selectedCells=[]);
+}
+
+function displayWords(){
+  const list=document.getElementById("wordList");
+  list.innerHTML="";
+  currentWords.forEach(word=>{
+    const span=document.createElement("span");
+    span.textContent=word;
+    span.id="word-"+word;
+    list.appendChild(span);
+  });
+}
+
+function checkWord(){
+  let word=selectedCells.map(c=>c.textContent).join("");
+
+  if(currentWords.includes(word) && !foundWords.includes(word)){
+    foundWords.push(word);
+    score+=10;
+    document.getElementById("score").textContent=score;
+
+    selectedCells.forEach(c=>{
+      c.classList.remove("selected");
+      c.classList.add("found");
+    });
+
+    document.getElementById("word-"+word).classList.add("found-word");
+
+    if(foundWords.length===currentWords.length){
+      clearInterval(timer);
+      alert("🎉 Congratulations! You completed " + currentLevel.toUpperCase() + " level!");
+      document.getElementById("playAgain").style.display="inline-block";
+    }
+  }
+
+  selectedCells=[];
+}
+
+function startGame(){
+  clearInterval(timer);
+  timer=setInterval(()=>{
+    timeLeft--;
+    document.getElementById("time").textContent=timeLeft;
+
+    if(timeLeft<=0){
+      clearInterval(timer);
+      alert("⏰ Time's Up!");
+      document.getElementById("playAgain").style.display="inline-block";
+    }
+  },1000);
+}
+
+function restartGame(){
+  if(currentLevel){
+    setLevel(currentLevel);
+  }
+}
+</script>
+
+</body>
+</html>
